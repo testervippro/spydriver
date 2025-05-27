@@ -1,6 +1,5 @@
 package io.github.sudharsan_selvaraj.interceptor;
 
-import com.google.common.collect.Lists;
 import io.github.sudharsan_selvaraj.MethodInvocationHandler;
 import io.github.sudharsan_selvaraj.SpyDriverListener;
 import io.github.sudharsan_selvaraj.types.driver.DriverCommand;
@@ -19,7 +18,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -62,7 +61,7 @@ public class BaseInterceptor implements Answer {
     private Object[] processArgs(Method method, Object[] args) {
         if (method.isVarArgs()) {
             if (method.getParameterCount() > 1) {
-                List<Object> newArgs = Lists.newArrayList();
+                List<Object> newArgs = new ArrayList<>();
                 newArgs.addAll(Arrays.asList(Arrays.copyOfRange(args, 0, method.getParameterCount() - 1)));
                 if (args.length < method.getParameterCount()) {
                     newArgs.add(new Object[]{});

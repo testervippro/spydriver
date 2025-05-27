@@ -1,17 +1,10 @@
 package io.github.sudharsan_selvaraj;
-
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,21 +24,13 @@ public class BaseWebDriverTest {
 
     @BeforeMethod
     @Parameters({"browser"})
-    public void setupDriver(String browser) throws MalformedURLException {
+    public void setupDriver(@Optional("chrome") String browser) throws MalformedURLException {
         listener.set(getListener());
         WebDriver driver;
         switch (browser) {
-            case "firefox":
-                driver = getFirefoxDriverSpy(listener.get());
-                break;
-            case "android":
-                driver = getAndroidDriverSpy(listener.get());
-                break;
-            case "ios":
-                driver = getIosDriverSpy(listener.get());
-                break;
-            default:
-                driver = getChromeDriverSpy(listener.get());
+            case "firefox" -> driver = getFirefoxDriverSpy(listener.get());
+            case "chrome" -> driver = getChromeDriverSpy(listener.get());
+            default -> throw new IllegalArgumentException("Unsupported browser: " + browser);
         }
         localDriver.set(driver);
     }
@@ -63,8 +48,8 @@ public class BaseWebDriverTest {
 
     protected WebDriver getChromeDriverSpy(SpyDriverListener listener) {
         ChromeOptions options = new ChromeOptions();
-        options.setCapability("w3c", true);
-        options.addArguments("--headless");
+       // options.setCapability("w3c", true);
+        ///options.addArguments("--headless");
         return getSpyDriver(new ChromeDriver(options), listener);
     }
 
@@ -72,19 +57,19 @@ public class BaseWebDriverTest {
         return getSpyDriver(new FirefoxDriver(), listener);
     }
 
-    protected WebDriver getAndroidDriverSpy(SpyDriverListener listener) throws MalformedURLException {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setBrowserName("chrome");
-        capabilities.setCapability("device", "Samsung Galaxy S10e");
-        return getSpyDriver(new AndroidDriver(new URL("https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub"), capabilities), listener);
-    }
+    // protected WebDriver getAndroidDriverSpy(SpyDriverListener listener) throws MalformedURLException {
+    //     DesiredCapabilities capabilities = new DesiredCapabilities();
+    //     capabilities.setBrowserName("chrome");
+    //     capabilities.setCapability("device", "Samsung Galaxy S10e");
+    //     return getSpyDriver(new AndroidDriver(new URL("https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub"), capabilities), listener);
+    // }
 
-    protected WebDriver getIosDriverSpy(SpyDriverListener listener) throws MalformedURLException {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setBrowserName("chrome");
-        capabilities.setCapability("device", "iPhone 12");
-        return getSpyDriver(new IOSDriver<>(new URL("https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub"), capabilities), listener);
-    }
+    // protected WebDriver getIosDriverSpy(SpyDriverListener listener) throws MalformedURLException {
+    //     DesiredCapabilities capabilities = new DesiredCapabilities();
+    //     capabilities.setBrowserName("chrome");
+    //     capabilities.setCapability("device", "iPhone 12");
+    //     return getSpyDriver(new IOSDriver<>(new URL("https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub"), capabilities), listener);
+    // }
 
     protected WebDriver getSpyDriver(WebDriver driver, SpyDriverListener listener) {
         SpyDriver spyDriver = new SpyDriver(driver, SpyDriverOptions.builder().listener(listener).build());

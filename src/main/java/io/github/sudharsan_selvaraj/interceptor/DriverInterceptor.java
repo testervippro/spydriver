@@ -1,6 +1,5 @@
 package io.github.sudharsan_selvaraj.interceptor;
 
-import com.google.common.collect.Lists;
 import io.github.sudharsan_selvaraj.SpyDriverListener;
 import org.mockito.stubbing.Answer;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +14,7 @@ public class DriverInterceptor extends BaseInterceptor implements Answer {
     private static List<String> classesToBeProxied;
 
     static {
-        classesToBeProxied = Lists.newArrayList(
+        classesToBeProxied = List.of(
                 "RemoteWebDriverOptions",
                 "RemoteWindow",
                 "RemoteTargetLocator",
